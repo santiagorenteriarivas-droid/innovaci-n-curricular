@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia de Instalacion — Sistema de Facturacion PHP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.7;
+        }
+
+        /* ── Header ── */
+        header {
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        header h1 { font-size: 2rem; font-weight: 300; letter-spacing: 1px; }
+        header p { color: #a0c4d8; margin-top: 0.5rem; font-size: 0.95rem; }
+
+        /* ── Layout ── */
+        .container { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem; }
+
+        /* ── Arquitectura ── */
+        .architecture {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .architecture h2 {
+            font-size: 1.1rem;
+            color: #2c5364;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .arch-diagram {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr auto 1fr;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+        .arch-box {
+            background: #f0f4f8;
+            border: 2px solid #d1dce5;
+            border-radius: 10px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .arch-box strong { display: block; font-size: 0.95rem; color: #2c5364; }
+        .arch-box small { color: #6b7c8d; font-size: 0.8rem; }
+        .arch-box .port {
+            display: inline-block;
+            background: #2c5364;
+            color: white;
+            border-radius: 20px;
+            padding: 2px 10px;
+            font-size: 0.75rem;
+            margin-top: 6px;
+        }
+        .arch-arrow { font-size: 1.5rem; color: #a0b4c0; text-align: center; }
+
+        /* ── Pasos ── */
+        .step {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            position: relative;
+            border-left: 4px solid #2c5364;
+        }
+        .step.first-time { border-left-color: #e67e22; }
+        .step-number {
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: #2c5364;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .step.first-time .step-number { background: #e67e22; }
+        .step h3 {
+            font-size: 1.05rem;
+            color: #2c5364;
+            margin-bottom: 0.5rem;
+            padding-left: 2rem;
+        }
+        .step.first-time h3 { color: #e67e22; }
+        .step p { color: #4a5568; font-size: 0.92rem; margin-bottom: 0.8rem; }
+
+        /* ── Comando ── */
+        .cmd {
+            background: #1a1a2e;
+            color: #a8e6cf;
+            border-radius: 8px;
+            padding: 1rem 1.2rem;
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.85rem;
+            overflow-x: auto;
+            margin: 0.8rem 0;
+            position: relative;
+        }
+        .cmd .comment { color: #6b7c8d; }
+        .cmd .prompt { color: #f8b500; }
+
+        /* ── Boton copiar ── */
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.1);
+            color: #a8e6cf;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 6px;
+            padding: 4px 10px;
+            font-size: 0.72rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover { background: rgba(255,255,255,0.2); }
+        .copy-btn.copied { color: #f8b500; }
+
+        /* ── Tags ── */
+        .tag {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .tag-xampp { background: #fef3c7; color: #92400e; }
+        .tag-terminal { background: #dbeafe; color: #1e40af; }
+        .tag-browser { background: #d1fae5; color: #065f46; }
+        .tag-once { background: #fde8e8; color: #9b1c1c; }
+
+        /* ── Indicador visual XAMPP ── */
+        .xampp-visual {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin: 0.8rem 0;
+            font-size: 0.88rem;
+        }
+        .xampp-row {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+            gap: 1rem;
+        }
+        .xampp-module { width: 80px; font-weight: 600; }
+        .xampp-status {
+            display: inline-block;
+            padding: 2px 12px;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+        .xampp-on { background: #d1fae5; color: #065f46; }
+        .xampp-off { background: #f3f4f6; color: #9ca3af; }
+        .xampp-port { color: #6b7280; font-size: 0.82rem; }
+
+        /* ── Resultado esperado ── */
+        .expected {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            margin: 0.8rem 0;
+            font-size: 0.88rem;
+            color: #166534;
+        }
+        .expected strong { color: #15803d; }
+
+        /* ── Warning ── */
+        .warning {
+            background: #fffbeb;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            margin: 0.8rem 0;
+            font-size: 0.88rem;
+            color: #92400e;
+        }
+
+        /* ── Troubleshooting ── */
+        .trouble {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .trouble h2 {
+            font-size: 1.1rem;
+            color: #dc2626;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .trouble-item {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 0.8rem 0;
+        }
+        .trouble-item:last-child { border-bottom: none; }
+        .trouble-item summary {
+            cursor: pointer;
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.9rem;
+        }
+        .trouble-item summary:hover { color: #2c5364; }
+        .trouble-item p { margin-top: 0.5rem; color: #4a5568; font-size: 0.88rem; }
+
+        /* ── Resumen final ── */
+        .summary {
+            background: linear-gradient(135deg, #0f2027, #203a43);
+            color: white;
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .summary h2 { font-size: 1.05rem; margin-bottom: 1rem; font-weight: 400; }
+        .summary-steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+        .summary-step {
+            background: rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+        .summary-step .num {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #a8e6cf;
+        }
+        .summary-step .label { font-size: 0.82rem; color: #a0c4d8; margin-top: 4px; }
+
+        /* ── Footer ── */
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+            font-size: 0.82rem;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 640px) {
+            header h1 { font-size: 1.4rem; }
+            .arch-diagram { grid-template-columns: 1fr; }
+            .arch-arrow { transform: rotate(90deg); }
+            .summary-steps { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Sistema de Facturacion PHP</h1>
+    <p>Guia de instalacion paso a paso</p>
+</header>
+
+<div class="container">
+
+    <!-- ── Arquitectura ── -->
+    <div class="architecture">
+        <h2>Arquitectura del sistema</h2>
+        <p style="color:#4a5568; font-size:0.9rem; margin-bottom:1rem;">
+            El sistema tiene 3 componentes que deben estar corriendo al mismo tiempo:
+        </p>
+        <div class="arch-diagram">
+            <div class="arch-box">
+                <strong>MariaDB</strong>
+                <small>Base de datos</small><br>
+                <span class="port">:3306</span>
+            </div>
+            <div class="arch-arrow">&larr;</div>
+            <div class="arch-box">
+                <strong>API REST</strong>
+                <small>ApiGenericaPhp</small><br>
+                <span class="port">:8000</span>
+            </div>
+            <div class="arch-arrow">&larr;</div>
+            <div class="arch-box">
+                <strong>Frontend</strong>
+                <small>FrontPhp (Apache)</small><br>
+                <span class="port">:80</span>
+            </div>
+        </div>
+        <p style="color:#6b7c8d; font-size:0.82rem; text-align:center; margin-top:0.5rem;">
+            El navegador habla con el Frontend, el Frontend habla con la API, y la API habla con la base de datos.
+        </p>
+    </div>
+
+    <!-- ── Que es cada proyecto ── -->
+    <div class="architecture">
+        <h2>Que es cada proyecto</h2>
+
+        <div style="margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem; color:#2c5364; margin-bottom:0.4rem;">ApiGenericaPhp <span class="tag tag-terminal">Backend</span></h3>
+            <p style="color:#4a5568; font-size:0.9rem;">
+                Es la <strong>API REST</strong> (el backend). Es un servidor que recibe peticiones HTTP y responde con JSON.
+                No tiene interfaz visual — no tiene botones, formularios ni tablas HTML.
+                Solo recibe pedidos y devuelve datos.
+            </p>
+            <p style="color:#4a5568; font-size:0.9rem; margin-top:0.4rem;">
+                Por ejemplo, si le pedis <code>GET /api/producto</code>, te responde un JSON con todos los productos de la base de datos.
+                Si le mandas <code>POST /api/producto</code> con datos JSON, crea un producto nuevo.
+            </p>
+            <p style="color:#4a5568; font-size:0.9rem; margin-top:0.4rem;">
+                Es <strong>generico</strong>: un solo controlador maneja TODAS las tablas. No necesitas crear codigo nuevo para cada tabla — cualquier tabla que exista en la BD se puede consultar con <code>/api/{nombre_de_tabla}</code>.
+            </p>
+            <p style="color:#6b7c8d; font-size:0.84rem; margin-top:0.4rem;">
+                Se ejecuta con: <code>C:\xampp\php\php.exe -S localhost:8000 -t public</code> (servidor PHP integrado en el puerto 8000).
+            </p>
+        </div>
+
+        <div style="margin-bottom:1.5rem;">
+            <h3 style="font-size:1rem; color:#2c5364; margin-bottom:0.4rem;">FrontPhp_AppiGenericaPhp <span class="tag tag-browser">Frontend</span></h3>
+            <p style="color:#4a5568; font-size:0.9rem;">
+                Es el <strong>frontend</strong> (la interfaz web). Es lo que el usuario ve en el navegador: formularios, tablas, botones, sidebar de navegacion.
+                Esta hecho con PHP + HTML + Bootstrap (CSS).
+            </p>
+            <p style="color:#4a5568; font-size:0.9rem; margin-top:0.4rem;">
+                El frontend <strong>no habla directamente con la base de datos</strong>. Cuando necesita datos (listar productos, crear una factura), le hace una peticion HTTP a la API usando cURL, recibe el JSON y lo convierte en HTML para mostrarlo en el navegador.
+            </p>
+            <p style="color:#6b7c8d; font-size:0.84rem; margin-top:0.4rem;">
+                Lo sirve Apache (XAMPP) en el puerto 80. Se abre en: <code>http://localhost/FrontPhp_AppiGenericaPhp/pages/home.php</code>
+            </p>
+        </div>
+
+        <div>
+            <h3 style="font-size:1rem; color:#2c5364; margin-bottom:0.4rem;">Base de datos <span class="tag tag-xampp">MariaDB</span></h3>
+            <p style="color:#4a5568; font-size:0.9rem;">
+                MariaDB es el motor de base de datos que viene con XAMPP (es compatible con MySQL).
+                Guarda toda la informacion del sistema: productos, personas, clientes, vendedores, facturas, usuarios, roles, etc.
+            </p>
+            <p style="color:#4a5568; font-size:0.9rem; margin-top:0.4rem;">
+                La base de datos se crea ejecutando un <strong>script SQL</strong> (<code>bdfacturas_mariadb.sql</code>) que crea 12 tablas, 5 triggers (acciones automaticas) y 5 stored procedures, con datos de ejemplo incluidos.
+            </p>
+            <p style="color:#6b7c8d; font-size:0.84rem; margin-top:0.4rem;">
+                Se prende desde XAMPP &rarr; MySQL &rarr; Start (puerto 3306). Se administra visualmente en <code>http://localhost/phpmyadmin</code>.
+            </p>
+        </div>
+    </div>
+
+    <!-- ── Como se conectan ── -->
+    <div class="architecture">
+        <h2>Como se conectan entre si</h2>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1.2rem; font-family:'Cascadia Code','Consolas',monospace; font-size:0.82rem; line-height:1.9; color:#334155; overflow-x:auto;">
+            <strong style="color:#2c5364;">1.</strong> El usuario abre en el navegador: <span style="color:#0369a1;">localhost/FrontPhp_.../pages/producto.php</span><br>
+            <strong style="color:#2c5364;">2.</strong> Apache ejecuta producto.php (frontend PHP)<br>
+            <strong style="color:#2c5364;">3.</strong> producto.php usa cURL para pedir datos a la API:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;cURL GET &rarr; <span style="color:#0369a1;">localhost:8000/api/producto</span><br>
+            <strong style="color:#2c5364;">4.</strong> La API recibe la peticion en index.php<br>
+            <strong style="color:#2c5364;">5.</strong> index.php la envia al controlador &rarr; servicio &rarr; repositorio<br>
+            <strong style="color:#2c5364;">6.</strong> El repositorio ejecuta SQL con PDO:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#7c3aed;">SELECT * FROM producto</span> &rarr; MariaDB (puerto 3306)<br>
+            <strong style="color:#2c5364;">7.</strong> MariaDB devuelve las filas &rarr; el repositorio las convierte a array PHP<br>
+            <strong style="color:#2c5364;">8.</strong> La API responde JSON al frontend:<br>
+            &nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#059669;">{"tabla":"producto","total":8,"datos":[...]}</span><br>
+            <strong style="color:#2c5364;">9.</strong> producto.php recibe el JSON, lo recorre y genera HTML con una tabla<br>
+            <strong style="color:#2c5364;">10.</strong> Apache envia el HTML al navegador &rarr; el usuario ve la tabla de productos
+        </div>
+    </div>
+
+    <!-- ── Que es XAMPP ── -->
+    <div class="architecture">
+        <h2>Que es XAMPP y que hace cada boton</h2>
+        <p style="color:#4a5568; font-size:0.9rem; margin-bottom:1rem;">
+            XAMPP es un programa que instala todo lo necesario para desarrollo web en Windows: Apache (servidor web), MariaDB (base de datos) y PHP (lenguaje). Se controla desde el <strong>XAMPP Control Panel</strong>:
+        </p>
+        <table style="width:100%; font-size:0.88rem; color:#4a5568; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; width:20%; color:#2c5364;">Apache</td>
+                <td style="padding:8px 0;">Servidor web. Sirve las paginas PHP del frontend al navegador. Puerto 80. <strong>Start</strong> para prenderlo.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">MySQL</td>
+                <td style="padding:8px 0;">Base de datos MariaDB (XAMPP lo llama "MySQL" pero es MariaDB). Puerto 3306. <strong>Start</strong> para prenderlo.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">Admin</td>
+                <td style="padding:8px 0;">Abre phpMyAdmin en el navegador (para ver y editar la base de datos visualmente).</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">Stop</td>
+                <td style="padding:8px 0;">Apaga el servicio. Si dice Stop, significa que esta corriendo (verde).</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">PID / Port</td>
+                <td style="padding:8px 0;">PID = numero de proceso (solo confirma que esta corriendo). Port = el puerto que usa.</td>
+            </tr>
+        </table>
+        <div class="warning" style="margin-top:1rem;">
+            <strong>Para este proyecto solo necesitas Apache y MySQL.</strong> FileZilla, Mercury y Tomcat no se usan — dejalos en Stop.
+        </div>
+    </div>
+
+    <!-- ── Requisitos ── -->
+    <div class="step">
+        <div class="step-number">!</div>
+        <h3>&nbsp; Requisitos previos</h3>
+        <p>Antes de empezar, asegurate de tener instalado:</p>
+        <ul style="margin-left:1.5rem; color:#4a5568; font-size:0.92rem;">
+            <li><strong>XAMPP</strong> (incluye Apache, MariaDB y PHP 8.0+)</li>
+            <li>Los dos proyectos dentro de <code>C:\xampp\htdocs\</code>:
+                <ul style="margin-top:4px;">
+                    <li><code>ApiGenericaPhp</code> (la API REST)</li>
+                    <li><code>FrontPhp_AppiGenericaPhp</code> (el frontend)</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <!-- ── Paso 0 ── -->
+    <div class="step first-time">
+        <div class="step-number">0</div>
+        <h3>&nbsp; Crear la base de datos con phpMyAdmin <span class="tag tag-once">Solo la primera vez</span></h3>
+        <p>Este paso solo se hace una vez. Si ya creaste la base de datos antes, saltalo.</p>
+
+        <p><strong>0.1</strong> &mdash; Prender <strong>MySQL</strong> y <strong>Apache</strong> desde XAMPP (ambos necesarios para phpMyAdmin):</p>
+        <div class="xampp-visual">
+            <div class="xampp-row">
+                <span class="xampp-module">Apache</span>
+                <span class="xampp-status xampp-on">Running</span>
+                <span class="xampp-port">Puerto 80</span>
+            </div>
+            <div class="xampp-row">
+                <span class="xampp-module">MySQL</span>
+                <span class="xampp-status xampp-on">Running</span>
+                <span class="xampp-port">Puerto 3306</span>
+            </div>
+        </div>
+
+        <p><strong>0.2</strong> &mdash; Abrir <strong>phpMyAdmin</strong> en el navegador:</p>
+        <div class="cmd">
+            <button class="copy-btn" onclick="copyCmd(this)">Copiar</button>
+            http://localhost/phpmyadmin
+        </div>
+        <p style="color:#6b7c8d; font-size:0.85rem;">Tambien se puede abrir haciendo clic en el boton <strong>Admin</strong> de la fila MySQL en XAMPP.</p>
+
+        <p><strong>0.3</strong> &mdash; Hacer clic en la pestana <strong>"Importar"</strong> (arriba en phpMyAdmin):</p>
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:1rem; margin:0.8rem 0; font-size:0.88rem; color:#334155;">
+            <div style="display:flex; gap:0.5rem; margin-bottom:6px;">
+                <span style="padding:3px 10px; background:#e2e8f0; border-radius:4px; font-size:0.8rem;">Bases de datos</span>
+                <span style="padding:3px 10px; background:#e2e8f0; border-radius:4px; font-size:0.8rem;">SQL</span>
+                <span style="padding:3px 10px; background:#e2e8f0; border-radius:4px; font-size:0.8rem;">Estado</span>
+                <span style="padding:3px 10px; background:#2c5364; color:white; border-radius:4px; font-size:0.8rem; font-weight:600;">Importar</span>
+                <span style="padding:3px 10px; background:#e2e8f0; border-radius:4px; font-size:0.8rem;">Exportar</span>
+            </div>
+            <span style="color:#6b7c8d; font-size:0.82rem;">No seleccionar ninguna base de datos antes. El script ya crea la BD automaticamente.</span>
+        </div>
+
+        <p><strong>0.4</strong> &mdash; Hacer clic en <strong>"Seleccionar archivo"</strong> y buscar:</p>
+        <div class="cmd">
+            C:\xampp\htdocs\ApiGenericaPhp\script_bd\bdfacturas_mariadb.sql
+        </div>
+
+        <p><strong>0.5</strong> &mdash; Verificar que el juego de caracteres diga <strong>utf-8</strong> y hacer clic en el boton <strong>"Importar"</strong> (abajo).</p>
+
+        <div class="expected">
+            <strong>Resultado:</strong> phpMyAdmin muestra un mensaje verde: "La importacion se ejecuto exitosamente". En el panel izquierdo aparece la base de datos <code>bdfacturas_mariadb_local</code> con 12 tablas.
+        </div>
+
+        <details class="trouble-item" style="margin-top:1rem;">
+            <summary>Alternativa: crear la BD desde la terminal (sin phpMyAdmin)</summary>
+            <div class="cmd" style="margin-top:0.5rem;">
+                <button class="copy-btn" onclick="copyCmd(this)">Copiar</button>
+                <span class="prompt">></span> C:\xampp\mysql\bin\mysql.exe -u root --default-character-set=utf8mb4 -e "source C:/xampp/htdocs/ApiGenericaPhp/script_bd/bdfacturas_mariadb.sql"
+            </div>
+            <p style="margin-top:0.5rem;">Si no muestra ningun error, funciono. Silencio = exito.</p>
+        </details>
+
+        <div class="warning" style="margin-top:1rem;">
+            <strong>Si necesitas resetear la BD:</strong> podes ejecutar la importacion de nuevo. El script borra todo y lo recrea desde cero con los datos de ejemplo. Ojo: los datos que hayas agregado se pierden.
+        </div>
+    </div>
+
+    <!-- ── Paso 1 ── -->
+    <div class="step">
+        <div class="step-number">1</div>
+        <h3>&nbsp; Prender MySQL y Apache <span class="tag tag-xampp">XAMPP</span></h3>
+        <p>Abrir el <strong>XAMPP Control Panel</strong> y hacer clic en <strong>Start</strong> en MySQL y Apache:</p>
+        <div class="xampp-visual">
+            <div class="xampp-row">
+                <span class="xampp-module">Apache</span>
+                <span class="xampp-status xampp-on">Running</span>
+                <span class="xampp-port">Puerto 80, 443</span>
+            </div>
+            <div class="xampp-row">
+                <span class="xampp-module">MySQL</span>
+                <span class="xampp-status xampp-on">Running</span>
+                <span class="xampp-port">Puerto 3306</span>
+            </div>
+        </div>
+        <div class="expected">
+            <strong>Resultado:</strong> Los dos modulos deben estar en verde.
+        </div>
+    </div>
+
+    <!-- ── Paso 2 ── -->
+    <div class="step">
+        <div class="step-number">2</div>
+        <h3>&nbsp; Prender la API <span class="tag tag-terminal">Terminal</span></h3>
+        <p>Abrir una terminal (PowerShell, CMD o Git Bash) y ejecutar:</p>
+        <div class="cmd">
+            <button class="copy-btn" onclick="copyCmd(this)">Copiar</button>
+            <span class="prompt">></span> cd C:\xampp\htdocs\ApiGenericaPhp<br>
+            <span class="prompt">></span> C:\xampp\php\php.exe -S localhost:8000 -t public
+        </div>
+
+        <div class="expected">
+            <strong>Resultado:</strong> La terminal muestra <code>PHP 8.0.30 Development Server (http://localhost:8000) started</code> y se queda esperando. Eso es normal.
+        </div>
+
+        <div class="warning">
+            <strong>Importante:</strong> No cerrar esa terminal. Si la cerras, la API se apaga. Podes minimizarla.
+        </div>
+    </div>
+
+    <!-- ── Paso 3 ── -->
+    <div class="step">
+        <div class="step-number">3</div>
+        <h3>&nbsp; Abrir en el navegador <span class="tag tag-browser">Navegador</span></h3>
+        <p>Abrir Chrome, Firefox o Edge y escribir:</p>
+        <div class="cmd">
+            <button class="copy-btn" onclick="copyCmd(this)">Copiar</button>
+            http://localhost/FrontPhp_AppiGenericaPhp/pages/home.php
+        </div>
+        <div class="expected">
+            <strong>Resultado:</strong> Se ve la pagina de inicio con el mensaje "API conectada" en verde. Si dice "API no disponible" en rojo, volver al Paso 2.
+        </div>
+    </div>
+
+    <!-- ── Resumen ── -->
+    <div class="summary">
+        <h2>Resumen: 3 cosas corriendo al mismo tiempo</h2>
+        <div class="summary-steps">
+            <div class="summary-step">
+                <div class="num">1</div>
+                <div class="label">MySQL<br><small>XAMPP &rarr; Start</small></div>
+            </div>
+            <div class="summary-step">
+                <div class="num">2</div>
+                <div class="label">Apache<br><small>XAMPP &rarr; Start</small></div>
+            </div>
+            <div class="summary-step">
+                <div class="num">3</div>
+                <div class="label">API<br><small>Terminal &rarr; php -S</small></div>
+            </div>
+            <div class="summary-step">
+                <div class="num">4</div>
+                <div class="label">Navegador<br><small>localhost/Front...</small></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Apagar ── -->
+    <div class="step">
+        <div class="step-number">&times;</div>
+        <h3>&nbsp; Para apagar el sistema</h3>
+        <p>En orden inverso:</p>
+        <ol style="margin-left:1.5rem; color:#4a5568; font-size:0.92rem;">
+            <li>Cerrar la terminal (o presionar <code>Ctrl+C</code>) para apagar la API</li>
+            <li>XAMPP &rarr; Apache &rarr; <strong>Stop</strong></li>
+            <li>XAMPP &rarr; MySQL &rarr; <strong>Stop</strong></li>
+        </ol>
+    </div>
+
+    <!-- ── Que hace cada comando ── -->
+    <div class="architecture">
+        <h2>Que hace el comando de la API</h2>
+        <div class="cmd" style="margin-bottom:1rem;">
+            C:\xampp\php\php.exe -S localhost:8000 -t public
+        </div>
+        <table style="width:100%; font-size:0.88rem; color:#4a5568; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; width:40%; font-family:monospace; color:#2c5364;">C:\xampp\php\php.exe</td>
+                <td style="padding:8px 0;">El ejecutable de PHP. Se usa la ruta completa porque <code>php</code> solo no funciona si no esta en el PATH de Windows.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; font-family:monospace; color:#2c5364;">-S localhost:8000</td>
+                <td style="padding:8px 0;">Modo servidor. Levanta un servidor HTTP en <code>localhost</code> (esta PC), puerto <code>8000</code>.</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; font-weight:600; font-family:monospace; color:#2c5364;">-t public</td>
+                <td style="padding:8px 0;">Document root. La carpeta <code>public/</code> es el punto de entrada. Ahi esta <code>index.php</code> que recibe todas las peticiones. El resto del codigo (src/, config/) queda protegido.</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── URLs utiles ── -->
+    <div class="architecture">
+        <h2>URLs utiles</h2>
+        <table style="width:100%; font-size:0.88rem; color:#4a5568; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-family:monospace; color:#2c5364;">localhost/FrontPhp_.../pages/home.php</td>
+                <td style="padding:8px 0;">Pagina principal del frontend</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-family:monospace; color:#2c5364;">localhost:8000/</td>
+                <td style="padding:8px 0;">Bienvenida de la API</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-family:monospace; color:#2c5364;">localhost:8000/docs</td>
+                <td style="padding:8px 0;">Swagger UI (probar la API visualmente)</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-family:monospace; color:#2c5364;">localhost:8000/api/producto</td>
+                <td style="padding:8px 0;">JSON con todos los productos</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; font-family:monospace; color:#2c5364;">localhost/phpmyadmin</td>
+                <td style="padding:8px 0;">Administrar la base de datos visualmente</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── Conceptos ── -->
+    <div class="architecture">
+        <h2>Conceptos clave (breve)</h2>
+        <table style="width:100%; font-size:0.88rem; color:#4a5568; border-collapse:collapse;">
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; width:30%; color:#2c5364;">XAMPP</td>
+                <td style="padding:8px 0;">Paquete que instala Apache, MariaDB y PHP en Windows de una sola vez. Es como un "combo" para desarrollo web.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">Apache</td>
+                <td style="padding:8px 0;">Servidor web. Recibe peticiones del navegador y ejecuta archivos PHP. Sirve el frontend (las paginas con formularios y tablas).</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">MariaDB / MySQL</td>
+                <td style="padding:8px 0;">Motor de base de datos. Guarda toda la informacion (productos, clientes, facturas) en tablas. MariaDB es compatible con MySQL.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">API REST</td>
+                <td style="padding:8px 0;">Un servidor que recibe peticiones HTTP (GET, POST, PUT, DELETE) y responde con JSON. Es el intermediario entre el frontend y la base de datos. El frontend nunca habla directo con la BD.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">JSON</td>
+                <td style="padding:8px 0;">Formato de texto para enviar datos: <code>{"nombre":"Juan","edad":25}</code>. La API responde en JSON y el frontend lo interpreta.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">cURL</td>
+                <td style="padding:8px 0;">Libreria de PHP para hacer peticiones HTTP. El frontend usa cURL para "hablar" con la API (como un navegador invisible).</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">PDO</td>
+                <td style="padding:8px 0;">Libreria de PHP para conectarse a bases de datos. La API usa PDO para ejecutar SQL contra MariaDB de forma segura.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">Trigger</td>
+                <td style="padding:8px 0;">Codigo SQL que se ejecuta automaticamente cuando se inserta, actualiza o elimina una fila. Los triggers calculan subtotales y manejan el stock.</td>
+            </tr>
+            <tr style="border-bottom:1px solid #e2e8f0;">
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">CRUD</td>
+                <td style="padding:8px 0;">Las 4 operaciones basicas sobre datos: <strong>C</strong>reate (crear), <strong>R</strong>ead (leer), <strong>U</strong>pdate (actualizar), <strong>D</strong>elete (eliminar).</td>
+            </tr>
+            <tr>
+                <td style="padding:8px 0; font-weight:600; color:#2c5364;">Puerto</td>
+                <td style="padding:8px 0;">Numero que identifica un servicio en la PC. Es como el numero de puerta en un edificio: la BD esta en la puerta 3306, la API en la 8000, y Apache en la 80.</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ── Troubleshooting ── -->
+    <div class="trouble">
+        <h2>Solucion de problemas</h2>
+
+        <details class="trouble-item">
+            <summary>La pagina no carga (error de conexion)</summary>
+            <p>Apache no esta prendido. Ir a XAMPP &rarr; Apache &rarr; Start.</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>La pagina carga pero sin datos (tablas vacias)</summary>
+            <p>La API no esta corriendo. Verificar que la terminal siga abierta con el servidor PHP. Si se cerro, volver al Paso 2.</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>La API responde pero sin datos (JSON vacio)</summary>
+            <p>MySQL no esta prendido o la base de datos no existe. XAMPP &rarr; MySQL &rarr; Start. Si nunca creaste la BD, hacer el Paso 0.</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>"php" no se reconoce como comando</summary>
+            <p>Usar la ruta completa: <code>C:\xampp\php\php.exe</code> en vez de solo <code>php</code>.</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>Puerto 8000 en uso (Address already in use)</summary>
+            <p>Ya hay otra instancia corriendo. Cerrar esa terminal, o usar otro puerto: <code>php -S localhost:8001 -t public</code> (y cambiar el puerto en <code>FrontPhp.../config.php</code>).</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>Puerto 80 en uso (Apache no prende)</summary>
+            <p>Otro programa ocupa el puerto 80 (Skype, IIS, otro servidor). Cerrar ese programa y reintentar.</p>
+        </details>
+
+        <details class="trouble-item">
+            <summary>Acentos se ven mal (caracteres raros)</summary>
+            <p>Al crear la BD, agregar <code>--default-character-set=utf8mb4</code> en el comando.</p>
+        </details>
+    </div>
+
+</div>
+
+<footer>
+    Sistema de Facturacion PHP &mdash; Proyecto educativo
+</footer>
+
+<script>
+function copyCmd(btn) {
+    const block = btn.parentElement;
+    let text = block.textContent
+        .replace('Copiar', '')
+        .replace(/>/g, '')
+        .trim()
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => l.length > 0)
+        .join('\n');
+    navigator.clipboard.writeText(text).then(() => {
+        btn.textContent = 'Copiado';
+        btn.classList.add('copied');
+        setTimeout(() => {
+            btn.textContent = 'Copiar';
+            btn.classList.remove('copied');
+        }, 1500);
+    });
+}
+</script>
+
+</body>
+</html>
