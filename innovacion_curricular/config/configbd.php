@@ -1,12 +1,12 @@
 <?php
 
-define('DB_SERVER', 'localhost');
+define('DB_SERVER', 'sql311.infinityfree.com');
 
-define('DB_USER', 'root');
+define('DB_USER', 'if0_42043544');
 
-define('DB_PASS', '');
+define('DB_PASS', 'UEbOGj2uofwx');
 
-define('DB_NAME', 'innovacion_curricular');
+define('DB_NAME', 'if0_42043544_dbinnovacion');
 
 define('DB_PORT', 3306);
 ?>

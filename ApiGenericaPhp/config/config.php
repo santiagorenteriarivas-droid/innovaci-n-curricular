@@ -9,20 +9,20 @@ return [
     // Datos de conexión
     'ConnectionStrings' => [
         'MariaDB' => [
-            'host'     => 'localhost',
+            'host'     => 'sql311.infinityfree.com',
             'port'     => 3306,
-            'database' => 'innovacion_curricular',
-            'username' => 'root',
-            'password' => '',
+            'database' => 'if0_42043544_dbinnovacion',
+            'username' => 'if0_42043544',
+            'password' => 'UEbOGj2uofwx',
             'charset'  => 'utf8mb4',
         ],
 
         'MySQL' => [
-            'host'     => 'localhost',
+            'host'     => 'sql311.infinityfree.com',
             'port'     => 3306,
-            'database' => 'innovacion_curricular',
-            'username' => 'root',
-            'password' => '',
+            'database' => 'if0_42043544_dbinnovacion',
+            'username' => 'if0_42043544',
+            'password' => 'UEbOGj2uofwx',
             'charset'  => 'utf8mb4',
         ],
     ],
@@ -32,7 +32,7 @@ return [
 
     // Configuración CORS
     'Cors' => [
-        'AllowedOrigins' => '*',
+        'AllowedOrigins' => 'Apiinnovacion.infinityfreeapp.com',
         'AllowedMethods' => 'GET, POST, PUT, DELETE, OPTIONS',
         'AllowedHeaders' => 'Content-Type, Authorization, X-Requested-With',
     ],

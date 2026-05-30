@@ -6,8 +6,6 @@
 -- Total de tablas: 25
 -- =============================================================================
 
-CREATE DATABASE IF NOT EXISTS `innovacion_curricular`;
-USE `innovacion_curricular`;
 
 -- =============================================
 -- TABLAS DEL MÓDULO: INNOVACIÓN CURRICULAR
